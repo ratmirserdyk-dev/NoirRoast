@@ -1,0 +1,1336 @@
+<!DOCTYPE html>
+<html lang="ru" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Noir & Roast — Спешелти-кофейня и обжарка зерна</title>
+    <meta name="description" content="Кофе как искусство медленной жизни. Спешелти-зерно свежей обжарки, авторские рецепты и пространство для ваших мыслей в центре города.">
+    
+    <!-- OpenGraph мета-теги для красивого превью в мессенджерах -->
+    <meta property="og:title" content="Noir & Roast — Кофе как искусство медленной жизни">
+    <meta property="og:description" content="Спешелти-зерно свежей обжарки, фильтр, авторские напитки и ремесленная выпечка.">
+    <meta property="og:type" content="website">
+
+    <!-- Подключение Google Fonts: Playfair Display (заголовки) и Inter (текст) -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;1,400&display=swap" rel="stylesheet">
+
+    <!-- Подключение Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <!-- Конфигурация Tailwind для поддержки нашей кастомной палитры и шрифтов -->
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        bgPrimary: 'var(--bg-primary)',
+                        bgCard: 'var(--bg-card)',
+                        bgElevated: 'var(--bg-elevated)',
+                        accent: 'var(--accent-color)',
+                        accentHover: 'var(--accent-hover)',
+                        textLight: 'var(--text-light)',
+                        textMuted: 'var(--text-muted)',
+                    },
+                    fontFamily: {
+                        serif: ['"Playfair Display"', 'Georgia', 'serif'],
+                        sans: ['"Inter"', 'system-ui', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+
+    <!-- Стилизация и CSS-переменные (Аналог style.css) -->
+    <style>
+        :root {
+            --bg-primary: #141210;      /* Глубокий тёмный графит с тёплым отливом */
+            --bg-card: #1E1A17;         /* Приглушённый тёмно-шоколадный для карточек */
+            --bg-elevated: #27221E;     /* Чуть более светлый шоколадный для ховеров и инпутов */
+            --accent-color: #C5A059;    /* Карамельно-бронзовый акцент */
+            --accent-hover: #D4A373;    /* Тёплый золотисто-карамельный при наведении */
+            --text-light: #F5EFEB;      /* Мягкий кремово-молочный для заголовков */
+            --text-muted: #A8A29E;      /* Сдержанный дымчато-серый для описаний */
+            --border-subtle: rgba(197, 160, 89, 0.16);
+        }
+
+        body {
+            background-color: var(--bg-primary);
+            color: var(--text-light);
+            font-family: 'Inter', sans-serif;
+            overflow-x: hidden;
+            selection-background-color: var(--accent-color);
+            selection-color: var(--bg-primary);
+        }
+
+        ::selection {
+            background: var(--accent-color);
+            color: var(--bg-primary);
+        }
+
+        /* Тонкий премиальный скроллбар */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: var(--bg-primary);
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #2E2823;
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: var(--accent-color);
+        }
+
+        /* Декоративное свечение на фоне */
+        .ambient-glow {
+            background: radial-gradient(circle at 50% 30%, rgba(197, 160, 89, 0.08) 0%, rgba(20, 18, 16, 0) 70%);
+        }
+
+        /* Плавные переходы для карточек меню */
+        .menu-card {
+            background-color: var(--bg-card);
+            border: 1px solid rgba(245, 239, 235, 0.05);
+            transition: all 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+        .menu-card:hover {
+            transform: translateY(-4px);
+            border-color: rgba(197, 160, 89, 0.35);
+            box-shadow: 0 20px 40px -15px rgba(0, 0, 0, 0.7), 0 0 25px -5px rgba(197, 160, 89, 0.08);
+        }
+
+        /* Стили аккордеона FAQ */
+        .faq-answer {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.4s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.3s ease;
+            opacity: 0;
+        }
+        .faq-item.active .faq-answer {
+            opacity: 1;
+        }
+        .faq-item.active .faq-icon {
+            transform: rotate(45deg);
+            color: var(--accent-color);
+        }
+
+        /* Анимация пара над чашкой */
+        @keyframes floatSteam {
+            0%, 100% { transform: translateY(0) scaleX(1); opacity: 0.3; }
+            50% { transform: translateY(-10px) scaleX(1.08); opacity: 0.65; }
+        }
+        .steam-path-1 { animation: floatSteam 4s ease-in-out infinite; }
+        .steam-path-2 { animation: floatSteam 5s ease-in-out infinite 1s; }
+        .steam-path-3 { animation: floatSteam 4.5s ease-in-out infinite 2s; }
+
+        /* Стилизация инпутов формы */
+        .form-input {
+            background-color: rgba(20, 18, 16, 0.75);
+            border: 1px solid rgba(245, 239, 235, 0.1);
+            color: var(--text-light);
+            transition: border-color 0.25s ease, box-shadow 0.25s ease;
+        }
+        .form-input:focus {
+            outline: none;
+            border-color: var(--accent-color);
+            box-shadow: 0 0 0 3px rgba(197, 160, 89, 0.15);
+        }
+        /* Стилизация иконки календаря в темной теме */
+        input[type="datetime-local"]::-webkit-calendar-picker-indicator {
+            filter: invert(0.8) sepia(0.3) saturate(1.5) hue-rotate(5deg);
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body class="antialiased selection:bg-accent selection:text-bgPrimary">
+
+    <!-- ================= НАВИГАЦИОННАЯ ПАНЕЛЬ (HEADER) ================= -->
+    <header id="header" class="fixed top-0 left-0 right-0 z-50 transition-all duration-300 bg-bgPrimary/85 backdrop-blur-md border-b border-white/5">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center justify-between h-20">
+                
+                <!-- Логотип -->
+                <a href="#" class="flex items-center gap-3 group focus:outline-none">
+                    <div class="w-10 h-10 rounded-full border border-accent/40 flex items-center justify-center bg-bgCard group-hover:border-accent transition-colors">
+                        <svg class="w-5 h-5 text-accent" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M12 3c-4.97 0-9 4.03-9 9s4.03 9 9 9 9-4.03 9-9-4.03-9-9-9zm0 0c2.5 3.5 2.5 14.5 0 18m0-18C9.5 6.5 9.5 17.5 12 21"/>
+                        </svg>
+                    </div>
+                    <div>
+                        <span class="font-serif text-xl sm:text-2xl tracking-wider font-semibold text-textLight block leading-none">NOIR & ROAST</span>
+                        <span class="text-[10px] uppercase tracking-[0.25em] text-accent block mt-1">Тёмная Обжарка</span>
+                    </div>
+                </a>
+
+                <!-- Десктопная навигация -->
+                <nav class="hidden md:flex items-center gap-8 text-sm font-medium text-textMuted">
+                    <a href="#about" class="hover:text-accent transition-colors py-2">О нас</a>
+                    <a href="#menu" class="hover:text-accent transition-colors py-2">Меню</a>
+                    <a href="#reviews" class="hover:text-accent transition-colors py-2">Отзывы</a>
+                    <a href="#faq" class="hover:text-accent transition-colors py-2">FAQ</a>
+                    <a href="#booking" class="hover:text-accent transition-colors py-2">Бронирование</a>
+                    <a href="#contacts" class="hover:text-accent transition-colors py-2">Контакты</a>
+                </nav>
+
+                <!-- Телефон и быстрая кнопка (Десктоп) -->
+                <div class="hidden lg:flex items-center gap-5">
+                    <a href="tel:+77015558492" class="text-sm text-textLight hover:text-accent transition-colors flex items-center gap-2 font-medium">
+                        <svg class="w-4 h-4 text-accent" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"/>
+                        </svg>
+                        <span>+7 701 555 84 92</span>
+                    </a>
+                    <a href="#booking" class="px-5 py-2.5 rounded-full text-xs uppercase tracking-widest font-semibold bg-accent/10 text-accent border border-accent/40 hover:bg-accent hover:text-bgPrimary transition-all duration-300">
+                        Бронь стола
+                    </a>
+                </div>
+
+                <!-- Мобильная кнопка меню-гамбургера -->
+                <div class="flex items-center gap-3 md:hidden">
+                    <a href="tel:+77015558492" aria-label="Позвонить" class="w-10 h-10 rounded-full bg-bgCard border border-white/10 flex items-center justify-center text-accent">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"/>
+                        </svg>
+                    </a>
+                    <button id="mobile-menu-btn" aria-label="Открыть меню" class="w-10 h-10 rounded-full bg-bgCard border border-white/10 flex items-center justify-center text-textLight hover:text-accent focus:outline-none">
+                        <svg id="menu-icon-open" class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M4 7h16M4 12h16M4 17h12"/>
+                        </svg>
+                        <svg id="menu-icon-close" class="w-5 h-5 hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M6 18L18 6M6 6l12 12"/>
+                        </svg>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Выпадающее мобильное меню -->
+        <div id="mobile-menu" class="hidden md:hidden bg-bgCard border-b border-white/10 px-6 py-6 space-y-4">
+            <nav class="flex flex-col space-y-3 text-base font-medium text-textLight">
+                <a href="#about" class="mobile-link py-2 border-b border-white/5 hover:text-accent transition-colors">О кофейне</a>
+                <a href="#menu" class="mobile-link py-2 border-b border-white/5 hover:text-accent transition-colors">Меню и цены</a>
+                <a href="#reviews" class="mobile-link py-2 border-b border-white/5 hover:text-accent transition-colors">Отзывы гостей</a>
+                <a href="#faq" class="mobile-link py-2 border-b border-white/5 hover:text-accent transition-colors">Частые вопросы (FAQ)</a>
+                <a href="#contacts" class="mobile-link py-2 border-b border-white/5 hover:text-accent transition-colors">Контакты и карта</a>
+            </nav>
+            <div class="pt-2 flex flex-col sm:flex-row gap-3">
+                <a href="#booking" class="mobile-link w-full text-center py-3 rounded-xl bg-accent text-bgPrimary font-semibold text-sm uppercase tracking-wider">
+                    Забронировать столик
+                </a>
+            </div>
+        </div>
+    </header>
+
+    <main>
+        <!-- ================= ГЛАВНЫЙ ЭКРАН (HERO SECTION) ================= -->
+        <section class="relative min-h-screen flex items-center pt-24 pb-16 lg:py-28 ambient-glow overflow-hidden">
+            <!-- Тонкие декоративные линии сетки -->
+            <div class="absolute inset-0 pointer-events-none opacity-15">
+                <div class="max-w-7xl mx-auto h-full border-x border-white/5 grid grid-cols-3">
+                    <div class="border-r border-white/5"></div>
+                    <div class="border-r border-white/5"></div>
+                </div>
+            </div>
+
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10 w-full">
+                <div class="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-8 items-center">
+                    
+                    <!-- Левая колонка: Типографика и CTA -->
+                    <div class="lg:col-span-7 space-y-8">
+                        <div class="inline-flex items-center gap-2.5 px-4 py-1.5 rounded-full bg-bgCard border border-accent/30 text-xs tracking-widest uppercase text-accent">
+                            <span class="w-2 h-2 rounded-full bg-accent animate-pulse"></span>
+                            <span>100% Specialty Arabica • Свежая обжарка</span>
+                        </div>
+
+                        <h1 class="font-serif text-4xl sm:text-5xl lg:text-6xl xl:text-7xl font-normal text-textLight leading-[1.12] tracking-tight">
+                            Кофе как искусство <br class="hidden sm:inline">
+                            <span class="italic text-accent font-normal">медленной жизни</span>
+                        </h1>
+
+                        <p class="text-base sm:text-lg lg:text-xl text-textMuted max-w-2xl leading-relaxed font-light">
+                            Спешелти-зерно свежей обжарки, авторские рецепты и камерное пространство для ваших мыслей в самом центре города.
+                        </p>
+
+                        <!-- Кнопки призыва к действию (CTA) -->
+                        <div class="flex flex-col sm:flex-row items-stretch sm:items-center gap-4 pt-2">
+                            <a href="#booking" class="px-8 py-4 rounded-xl bg-accent hover:bg-accentHover text-bgPrimary font-semibold text-sm uppercase tracking-wider text-center transition-all duration-300 shadow-lg shadow-accent/10 flex items-center justify-center gap-3">
+                                <span>Забронировать столик</span>
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"/>
+                                </svg>
+                            </a>
+                            <a href="#menu" class="px-8 py-4 rounded-xl bg-bgCard hover:bg-bgElevated text-textLight border border-white/10 hover:border-accent/40 font-medium text-sm uppercase tracking-wider text-center transition-all duration-300">
+                                Смотреть меню
+                            </a>
+                        </div>
+
+                        <!-- Минималистичные метрики и преимущества -->
+                        <div class="pt-6 border-t border-white/10 grid grid-cols-3 gap-4 sm:gap-8 max-w-xl">
+                            <div>
+                                <p class="font-serif text-2xl sm:text-3xl text-accent">87.5+</p>
+                                <p class="text-xs text-textMuted mt-1">Оценка зерна по шкале SCA</p>
+                            </div>
+                            <div>
+                                <p class="font-serif text-2xl sm:text-3xl text-textLight">7 дней</p>
+                                <p class="text-xs text-textMuted mt-1">Пик вкуса после ростера</p>
+                            </div>
+                            <div>
+                                <p class="font-serif text-2xl sm:text-3xl text-textLight">08:00</p>
+                                <p class="text-xs text-textMuted mt-1">Открываемся с горячими круассанами</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Правая колонка: Эстетичная иллюстрация / Карточка лота дня -->
+                    <div class="lg:col-span-5">
+                        <div class="relative mx-auto max-w-md lg:max-w-none">
+                            <!-- Декоративная рамка со смещением -->
+                            <div class="absolute -inset-3 rounded-3xl border border-accent/20 translate-x-3 translate-y-3 pointer-events-none hidden sm:block"></div>
+                            
+                            <div class="relative rounded-3xl bg-bgCard border border-white/10 p-6 sm:p-8 shadow-2xl overflow-hidden">
+                                <!-- Верхний бейдж карточки -->
+                                <div class="flex items-center justify-between border-b border-white/10 pb-5 mb-6">
+                                    <div>
+                                        <span class="text-[11px] uppercase tracking-widest text-accent block">Микролот недели • Фильтр & V60</span>
+                                        <h2 class="font-serif text-xl text-textLight mt-0.5">Эфиопия Иргачефф Челбеса</h2>
+                                    </div>
+                                    <span class="px-3 py-1 rounded-full bg-accent/15 text-accent text-xs font-medium border border-accent/30">
+                                        Мытая обработка
+                                    </span>
+                                </div>
+
+                                <!-- Минималистичная арт-графика кофейной чашки и воронки -->
+                                <div class="py-6 flex flex-col items-center justify-center relative">
+                                    <svg class="w-48 h-48 text-accent" viewBox="0 0 200 200" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                        <!-- Круги свечения -->
+                                        <circle cx="100" cy="105" r="72" stroke="currentColor" stroke-opacity="0.12" stroke-width="1" stroke-dasharray="3 3"/>
+                                        <circle cx="100" cy="105" r="54" stroke="currentColor" stroke-opacity="0.2" stroke-width="1"/>
+                                        
+                                        <!-- Линии пара -->
+                                        <path class="steam-path-1" d="M85 58C85 50 92 46 92 38C92 30 85 26 85 18" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+                                        <path class="steam-path-2" d="M100 52C100 44 107 40 107 32C107 24 100 20 100 12" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+                                        <path class="steam-path-3" d="M115 58C115 50 122 46 122 38C122 30 115 26 115 18" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+
+                                        <!-- Чашка на блюдце -->
+                                        <path d="M60 82H140V112C140 134.091 122.091 152 100 152C77.9086 152 60 134.091 60 112V82Z" fill="#141210" stroke="currentColor" stroke-width="2"/>
+                                        <!-- Ручка чашки -->
+                                        <path d="M140 90H150C157.732 90 164 96.268 164 104C164 111.732 157.732 118 150 118H139" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                                        <!-- Блюдце -->
+                                        <path d="M48 154H152" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/>
+                                        <path d="M64 160H136" stroke="currentColor" stroke-opacity="0.5" stroke-width="1.5" stroke-linecap="round"/>
+                                        <!-- Декоративное кофейное зерно внутри -->
+                                        <ellipse cx="100" cy="115" rx="12" ry="17" transform="rotate(-25 100 115)" stroke="currentColor" stroke-width="1.5"/>
+                                        <path d="M94 101C99 110 101 120 106 129" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/>
+                                    </svg>
+                                </div>
+
+                                <!-- Дескрипторы вкуса -->
+                                <div class="space-y-4 pt-2">
+                                    <div class="grid grid-cols-3 gap-2 text-center">
+                                        <div class="p-2.5 rounded-xl bg-bgPrimary/70 border border-white/5">
+                                            <span class="text-[11px] text-textMuted block">Дескрипторы</span>
+                                            <span class="text-xs font-medium text-textLight mt-0.5 block">Бергамот, Персик</span>
+                                        </div>
+                                        <div class="p-2.5 rounded-xl bg-bgPrimary/70 border border-white/5">
+                                            <span class="text-[11px] text-textMuted block">Кислотность</span>
+                                            <span class="text-xs font-medium text-accent mt-0.5 block">Яркая ягодная</span>
+                                        </div>
+                                        <div class="p-2.5 rounded-xl bg-bgPrimary/70 border border-white/5">
+                                            <span class="text-[11px] text-textMuted block">Обжарка</span>
+                                            <span class="text-xs font-medium text-textLight mt-0.5 block">Омни / Фильтр</span>
+                                        </div>
+                                    </div>
+
+                                    <div class="flex items-center justify-between pt-3 border-t border-white/10 text-xs text-textMuted">
+                                        <span class="flex items-center gap-2">
+                                            <span class="w-2 h-2 rounded-full bg-emerald-400"></span>
+                                            Свободные столики у окна
+                                        </span>
+                                        <a href="#menu" class="text-accent hover:underline font-medium">Дегустировать →</a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </section>
+
+        <!-- ================= О НАС И ФИЛОСОФИЯ (ABOUT) ================= -->
+        <section id="about" class="py-20 bg-bgCard/60 border-y border-white/5">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="grid grid-cols-1 lg:grid-cols-12 gap-10 items-end mb-14">
+                    <div class="lg:col-span-7">
+                        <span class="text-xs uppercase tracking-[0.25em] text-accent block mb-3">Философия Noir & Roast</span>
+                        <h2 class="font-serif text-3xl sm:text-4xl text-textLight leading-snug">
+                            Тишина, архитектура вкуса и уважение к каждому зерну
+                        </h2>
+                    </div>
+                    <div class="lg:col-span-5">
+                        <p class="text-textMuted text-sm sm:text-base leading-relaxed">
+                            Мы создали «Noir & Roast» как антитезу шумным сетевым кофейням на бегу. Здесь приглушённый свет, тактильная керамика ручной работы, выверенная минерализация воды и бариста, которые помогут найти именно ваш вкусовой профиль.
+                        </p>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                    <!-- Карточка 1 -->
+                    <article class="p-7 rounded-2xl bg-bgPrimary border border-white/5 hover:border-accent/30 transition-colors">
+                        <div class="w-11 h-11 rounded-xl bg-accent/10 border border-accent/30 flex items-center justify-center text-accent mb-5">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.7" d="M17.657 18.657A8 8 0 016.343 7.343S7 9 9 10c0-2 .5-5 2.986-7C14 5 16.09 5.777 17.656 7.343A7.975 7.975 0 0120 13a7.975 7.975 0 01-2.343 5.657z"/>
+                            </svg>
+                        </div>
+                        <h3 class="font-serif text-xl text-textLight mb-2.5">Собственный ростер Loring</h3>
+                        <p class="text-sm text-textMuted leading-relaxed">
+                            Обжариваем небольшие партии дважды в неделю по конвекционной технологии, сохраняя природную сладость, цветочную ароматику и чистоту чашки без горечи.
+                        </p>
+                    </article>
+
+                    <!-- Карточка 2 -->
+                    <article class="p-7 rounded-2xl bg-bgPrimary border border-white/5 hover:border-accent/30 transition-colors">
+                        <div class="w-11 h-11 rounded-xl bg-accent/10 border border-accent/30 flex items-center justify-center text-accent mb-5">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.7" d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z"/>
+                            </svg>
+                        </div>
+                        <h3 class="font-serif text-xl text-textLight mb-2.5">Подготовка воды</h3>
+                        <p class="text-sm text-textMuted leading-relaxed">
+                            Кофе на 98% состоит из воды. Наша система обратного осмоса с реминерализацией магнием и кальцием раскрывает тонкие ягодные и цитрусовые ноты эфиопских и колумбийских лотов.
+                        </p>
+                    </article>
+
+                    <!-- Карточка 3 -->
+                    <article class="p-7 rounded-2xl bg-bgPrimary border border-white/5 hover:border-accent/30 transition-colors">
+                        <div class="w-11 h-11 rounded-xl bg-accent/10 border border-accent/30 flex items-center justify-center text-accent mb-5">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.7" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"/>
+                            </svg>
+                        </div>
+                        <h3 class="font-serif text-xl text-textLight mb-2.5">Эстетика и комфорт</h3>
+                        <p class="text-sm text-textMuted leading-relaxed">
+                            Зонированный зал: уютные кресла у панорамного окна для чтения и свиданий, а также большой дубовый стол с розетками у каждого места и быстрым Wi-Fi для спокойной работы.
+                        </p>
+                    </article>
+                </div>
+            </div>
+        </section>
+
+        <!-- ================= УСЛУГИ И МЕНЮ (КАТАЛОГ) ================= -->
+        <section id="menu" class="py-24 relative">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                
+                <!-- Заголовок секции -->
+                <div class="flex flex-col md:flex-row md:items-end justify-between mb-12 gap-6">
+                    <div>
+                        <span class="text-xs uppercase tracking-[0.25em] text-accent block mb-3">Карта бара и пекарни</span>
+                        <h2 class="font-serif text-3xl sm:text-4xl lg:text-5xl text-textLight">Меню и авторские позиции</h2>
+                    </div>
+                    <p class="text-sm text-textMuted max-w-md">
+                        Все цены указаны в тенге (₸). Вы можете отметить понравившиеся позиции, чтобы они автоматически добавились к вашему бронированию столика.
+                    </p>
+                </div>
+
+                <!-- Кнопки фильтрации по категориям -->
+                <div class="flex flex-wrap items-center gap-2 sm:gap-3 mb-10 pb-2" id="menu-filters">
+                    <button data-filter="all" class="filter-btn active px-5 py-2.5 rounded-full text-xs uppercase tracking-widest font-semibold transition-all bg-accent text-bgPrimary">
+                        Все позиции
+                    </button>
+                    <button data-filter="classic" class="filter-btn px-5 py-2.5 rounded-full text-xs uppercase tracking-widest font-medium transition-all bg-bgCard text-textMuted hover:text-textLight border border-white/10">
+                        Классика
+                    </button>
+                    <button data-filter="alternative" class="filter-btn px-5 py-2.5 rounded-full text-xs uppercase tracking-widest font-medium transition-all bg-bgCard text-textMuted hover:text-textLight border border-white/10">
+                        Альтернатива
+                    </button>
+                    <button data-filter="signature" class="filter-btn px-5 py-2.5 rounded-full text-xs uppercase tracking-widest font-medium transition-all bg-bgCard text-textMuted hover:text-textLight border border-white/10">
+                        Авторские
+                    </button>
+                    <button data-filter="bakery" class="filter-btn px-5 py-2.5 rounded-full text-xs uppercase tracking-widest font-medium transition-all bg-bgCard text-textMuted hover:text-textLight border border-white/10">
+                        Выпечка
+                    </button>
+                </div>
+
+                <!-- Сетка карточек меню (генерируется и управляется через JS для интерактивности) -->
+                <div id="menu-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                    <!-- Карточки рендерятся скриптом из структурированного массива данных -->
+                </div>
+
+                <!-- Плашка выбранных напитков к предзаказу/бронированию -->
+                <div id="selected-tray" class="hidden mt-10 p-5 sm:p-6 rounded-2xl bg-bgCard border border-accent/40 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 shadow-xl">
+                    <div class="space-y-1">
+                        <div class="flex items-center gap-2 text-xs uppercase tracking-wider text-accent font-semibold">
+                            <span>Ваш выбор к бронированию</span>
+                            <span id="tray-count" class="px-2 py-0.5 rounded-full bg-accent text-bgPrimary text-[11px]">0</span>
+                        </div>
+                        <p id="tray-items-list" class="text-sm text-textLight font-normal"></p>
+                    </div>
+                    <div class="flex items-center gap-4 w-full sm:w-auto justify-between sm:justify-end border-t sm:border-t-0 border-white/10 pt-3 sm:pt-0">
+                        <div class="text-right">
+                            <span class="text-xs text-textMuted block">Итого:</span>
+                            <span id="tray-total" class="font-serif text-xl text-accent font-semibold">0 ₸</span>
+                        </div>
+                        <a href="#booking" class="px-5 py-3 rounded-xl bg-accent hover:bg-accentHover text-bgPrimary font-semibold text-xs uppercase tracking-wider transition-all whitespace-nowrap">
+                            Оформить к столику →
+                        </a>
+                    </div>
+                </div>
+
+            </div>
+        </section>
+
+        <!-- ================= ОТЗЫВЫ ГОСТЕЙ (REVIEWS) ================= -->
+        <section id="reviews" class="py-24 bg-bgCard/50 border-y border-white/5">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                
+                <div class="text-center max-w-2xl mx-auto mb-16">
+                    <span class="text-xs uppercase tracking-[0.25em] text-accent block mb-3">Атмосфера в деталях</span>
+                    <h2 class="font-serif text-3xl sm:text-4xl text-textLight mb-4">Что говорят наши постоянные гости</h2>
+                    <p class="text-sm sm:text-base text-textMuted">
+                        Каждая чашка и каждое утро в «Noir & Roast» — это маленькая история, которой делятся наши гости.
+                    </p>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6 lg:gap-8">
+                    <!-- Отзыв 1 -->
+                    <article class="p-7 rounded-2xl bg-bgPrimary border border-white/5 flex flex-col justify-between">
+                        <div>
+                            <!-- 5 звёзд -->
+                            <div class="flex items-center gap-1 text-accent mb-5" aria-label="Оценка 5 из 5">
+                                <svg class="w-4 h-4 fill-current" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg>
+                                <svg class="w-4 h-4 fill-current" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg>
+                                <svg class="w-4 h-4 fill-current" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg>
+                                <svg class="w-4 h-4 fill-current" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg>
+                                <svg class="w-4 h-4 fill-current" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg>
+                            </div>
+                            <blockquote class="text-textLight text-sm sm:text-base leading-relaxed mb-6 font-light">
+                                «Лучшая воронка V60 в городе. Эфиопия Иргачефф раскрывается настоящим персиковым чаем с жасмином, без намёка на пережаренную горечь. Отдельная любовь — тёмный камерный интерьер и идеальный плейлист на виниле».
+                            </blockquote>
+                        </div>
+                        <div class="pt-4 border-t border-white/10 flex items-center justify-between">
+                            <div>
+                                <p class="font-medium text-textLight text-sm">Алишер Сатпаев</p>
+                                <p class="text-xs text-textMuted">Архитектор, постоянный гость</p>
+                            </div>
+                            <span class="px-3 py-1 rounded-full bg-bgCard border border-accent/25 text-[11px] text-accent">
+                                Выбор: Воронка V60
+                            </span>
+                        </div>
+                    </article>
+
+                    <!-- Отзыв 2 -->
+                    <article class="p-7 rounded-2xl bg-bgPrimary border border-white/5 flex flex-col justify-between">
+                        <div>
+                            <div class="flex items-center gap-1 text-accent mb-5" aria-label="Оценка 5 из 5">
+                                <svg class="w-4 h-4 fill-current" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg>
+                                <svg class="w-4 h-4 fill-current" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg>
+                                <svg class="w-4 h-4 fill-current" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg>
+                                <svg class="w-4 h-4 fill-current" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg>
+                                <svg class="w-4 h-4 fill-current" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg>
+                            </div>
+                            <blockquote class="text-textLight text-sm sm:text-base leading-relaxed mb-6 font-light">
+                                «Прихожу сюда по утрам перед дизайн-созвонами. Раф Лаванда-Розмарин не приторный, на настоящей цветочной вытяжке, а миндальный круассан всегда тёплый и хрустящий. Очень удобно, что у каждого столика есть розетки».
+                            </blockquote>
+                        </div>
+                        <div class="pt-4 border-t border-white/10 flex items-center justify-between">
+                            <div>
+                                <p class="font-medium text-textLight text-sm">Дария Нурланова</p>
+                                <p class="text-xs text-textMuted">Арт-директор</p>
+                            </div>
+                            <span class="px-3 py-1 rounded-full bg-bgCard border border-accent/25 text-[11px] text-accent">
+                                Выбор: Раф Лаванда
+                            </span>
+                        </div>
+                    </article>
+
+                    <!-- Отзыв 3 -->
+                    <article class="p-7 rounded-2xl bg-bgPrimary border border-white/5 flex flex-col justify-between">
+                        <div>
+                            <div class="flex items-center gap-1 text-accent mb-5" aria-label="Оценка 5 из 5">
+                                <svg class="w-4 h-4 fill-current" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg>
+                                <svg class="w-4 h-4 fill-current" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg>
+                                <svg class="w-4 h-4 fill-current" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg>
+                                <svg class="w-4 h-4 fill-current" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg>
+                                <svg class="w-4 h-4 fill-current" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg>
+                            </div>
+                            <blockquote class="text-textLight text-sm sm:text-base leading-relaxed mb-6 font-light">
+                                «Беру здесь Флэт Уайт и пачку Колумбии Уила домой каждую субботу. Ребята бесплатно смалывают зерно ровно под мой домашний гейзер и всегда дают дельный совет по рецепту заваривания. Сервис на высоте!»
+                            </blockquote>
+                        </div>
+                        <div class="pt-4 border-t border-white/10 flex items-center justify-between">
+                            <div>
+                                <p class="font-medium text-textLight text-sm">Тимур Ержанов</p>
+                                <p class="text-xs text-textMuted">Разработчик</p>
+                            </div>
+                            <span class="px-3 py-1 rounded-full bg-bgCard border border-accent/25 text-[11px] text-accent">
+                                Выбор: Флэт Уайт
+                            </span>
+                        </div>
+                    </article>
+                </div>
+
+            </div>
+        </section>
+
+        <!-- ================= ИНТЕРАКТИВНЫЙ FAQ (ВОПРОСЫ И ОТВЕТЫ) ================= -->
+        <section id="faq" class="py-24">
+            <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+                
+                <div class="text-center mb-14">
+                    <span class="text-xs uppercase tracking-[0.25em] text-accent block mb-3">Забота о гостях</span>
+                    <h2 class="font-serif text-3xl sm:text-4xl text-textLight">Частые вопросы (FAQ)</h2>
+                </div>
+
+                <div class="space-y-4" id="faq-accordion">
+                    <!-- Вопрос 1 -->
+                    <div class="faq-item active rounded-2xl bg-bgCard border border-white/10 overflow-hidden transition-colors">
+                        <button class="faq-trigger w-full px-6 py-5 text-left flex items-center justify-between gap-4 focus:outline-none">
+                            <span class="font-serif text-lg sm:text-xl text-textLight">Есть ли у вас альтернативное растительное молоко?</span>
+                            <span class="faq-icon w-8 h-8 rounded-full bg-bgPrimary border border-white/10 flex items-center justify-center text-textMuted transition-transform duration-300 shrink-0">
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/>
+                                </svg>
+                            </span>
+                        </button>
+                        <div class="faq-answer px-6" style="max-height: 220px;">
+                            <p class="pb-6 text-sm sm:text-base text-textMuted leading-relaxed border-t border-white/5 pt-4">
+                                Да, мы готовим любые молочные напитки на профессиональном бариста-молоке: овсяном, кокосовом, миндальном или безлактозном коровьем. Замена на безлактозное молоко бесплатна, а на растительную основу составляет +350 ₸ к стоимости напитка.
+                            </p>
+                        </div>
+                    </div>
+
+                    <!-- Вопрос 2 -->
+                    <div class="faq-item rounded-2xl bg-bgCard border border-white/10 overflow-hidden transition-colors">
+                        <button class="faq-trigger w-full px-6 py-5 text-left flex items-center justify-between gap-4 focus:outline-none">
+                            <span class="font-serif text-lg sm:text-xl text-textLight">Можно ли прийти к вам с собакой (Dog-friendly)?</span>
+                            <span class="faq-icon w-8 h-8 rounded-full bg-bgPrimary border border-white/10 flex items-center justify-center text-textMuted transition-transform duration-300 shrink-0">
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/>
+                                </svg>
+                            </span>
+                        </button>
+                        <div class="faq-answer px-6">
+                            <p class="pb-6 text-sm sm:text-base text-textMuted leading-relaxed border-t border-white/5 pt-4">
+                                Безусловно! Мы полностью dog-friendly пространство. Для вашего четвероногого друга у нас всегда приготовлена свежая фильтрованная вода в керамической миске и натуральные гипоаллергенные лакомства на баре.
+                            </p>
+                        </div>
+                    </div>
+
+                    <!-- Вопрос 3 -->
+                    <div class="faq-item rounded-2xl bg-bgCard border border-white/10 overflow-hidden transition-colors">
+                        <button class="faq-trigger w-full px-6 py-5 text-left flex items-center justify-between gap-4 focus:outline-none">
+                            <span class="font-serif text-lg sm:text-xl text-textLight">Удобно ли у вас работать с ноутбуком? Есть ли розетки и Wi-Fi?</span>
+                            <span class="faq-icon w-8 h-8 rounded-full bg-bgPrimary border border-white/10 flex items-center justify-center text-textMuted transition-transform duration-300 shrink-0">
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/>
+                                </svg>
+                            </span>
+                        </button>
+                        <div class="faq-answer px-6">
+                            <p class="pb-6 text-sm sm:text-base text-textMuted leading-relaxed border-t border-white/5 pt-4">
+                                В нашей кофейне выделена специальная рабочая зона с большим массивом дубового стола, где у каждого посадочного места встроены розетки 220V и порты USB-C. Скоростной Wi-Fi до 300 Мбит/с позволяет комфортно проводить видеозвонки без помех.
+                            </p>
+                        </div>
+                    </div>
+
+                    <!-- Вопрос 4 -->
+                    <div class="faq-item rounded-2xl bg-bgCard border border-white/10 overflow-hidden transition-colors">
+                        <button class="faq-trigger w-full px-6 py-5 text-left flex items-center justify-between gap-4 focus:outline-none">
+                            <span class="font-serif text-lg sm:text-xl text-textLight">Можно ли купить кофе в зёрнах для дома и помолоть его?</span>
+                            <span class="faq-icon w-8 h-8 rounded-full bg-bgPrimary border border-white/10 flex items-center justify-center text-textMuted transition-transform duration-300 shrink-0">
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/>
+                                </svg>
+                            </span>
+                        </button>
+                        <div class="faq-answer px-6">
+                            <p class="pb-6 text-sm sm:text-base text-textMuted leading-relaxed border-t border-white/5 pt-4">
+                                Да, на нашей витрине всегда представлено от 8 до 12 свежих лотов в пачках по 250 г и 1 кг (от 4 800 ₸ за пачку) и дрип-пакеты. По вашей просьбе бариста бесплатно смелет зерно на профессиональной кофемолке Mahlkönig EK43 точно под ваш домашний метод: турку, гейзерную кофеварку, рожок, воронку V60 или френч-пресс.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </section>
+
+        <!-- ================= ФОРМА ЗАЯВКИ И БРОНИРОВАНИЯ СТОЛИКА ================= -->
+        <section id="booking" class="py-24 relative bg-bgCard/40 border-t border-white/5">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="grid grid-cols-1 lg:grid-cols-12 gap-12 items-start">
+                    
+                    <!-- Описание условий бронирования -->
+                    <div class="lg:col-span-5 space-y-6">
+                        <span class="text-xs uppercase tracking-[0.25em] text-accent block">Резерв стола и предзаказ</span>
+                        <h2 class="font-serif text-3xl sm:text-4xl text-textLight leading-tight">
+                            Забронируйте любимый столик без ожидания
+                        </h2>
+                        <p class="text-textMuted text-sm sm:text-base leading-relaxed">
+                            Планируете деловую встречу, утреннюю работу с ноутбуком или неспешное свидание у панорамного окна? Оставьте заявку — мы подготовим столик и сварим кофе точно к вашему приходу.
+                        </p>
+
+                        <div class="space-y-4 pt-4">
+                            <div class="flex items-start gap-4 p-4 rounded-xl bg-bgCard border border-white/5">
+                                <div class="w-9 h-9 rounded-lg bg-accent/15 text-accent flex items-center justify-center shrink-0 mt-0.5">
+                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                                    </svg>
+                                </div>
+                                <div>
+                                    <h3 class="text-sm font-medium text-textLight">Держим бронь 20 минут</h3>
+                                    <p class="text-xs text-textMuted mt-1">Если вы задерживаетесь в пробке, просто предупредите нас по телефону.</p>
+                                </div>
+                            </div>
+
+                            <div class="flex items-start gap-4 p-4 rounded-xl bg-bgCard border border-white/5">
+                                <div class="w-9 h-9 rounded-lg bg-accent/15 text-accent flex items-center justify-center shrink-0 mt-0.5">
+                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
+                                    </svg>
+                                </div>
+                                <div>
+                                    <h3 class="text-sm font-medium text-textLight">Без депозита и предоплаты</h3>
+                                    <p class="text-xs text-textMuted mt-1">Бронирование столиков в любом зале абсолютно бесплатно.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Карточка формы -->
+                    <div class="lg:col-span-7">
+                        <div class="rounded-3xl bg-bgCard border border-white/10 p-6 sm:p-10 shadow-2xl relative">
+                            
+                            <form id="reservation-form" novalidate class="space-y-6">
+                                <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
+                                    <!-- Имя -->
+                                    <div>
+                                        <label for="guest-name" class="block text-xs uppercase tracking-wider text-textMuted mb-2">Ваше имя *</label>
+                                        <input type="text" id="guest-name" name="name" required placeholder="Например, Арман"
+                                            class="form-input w-full px-4 py-3.5 rounded-xl text-sm placeholder:text-textMuted/50">
+                                        <p id="error-name" class="hidden text-xs text-amber-400 mt-1.5">Пожалуйста, укажите ваше имя</p>
+                                    </div>
+
+                                    <!-- Телефон -->
+                                    <div>
+                                        <label for="guest-phone" class="block text-xs uppercase tracking-wider text-textMuted mb-2">Номер телефона *</label>
+                                        <input type="tel" id="guest-phone" name="phone" required placeholder="+7 (701) 000-00-00"
+                                            class="form-input w-full px-4 py-3.5 rounded-xl text-sm placeholder:text-textMuted/50">
+                                        <p id="error-phone" class="hidden text-xs text-amber-400 mt-1.5">Введите корректный номер телефона</p>
+                                    </div>
+                                </div>
+
+                                <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
+                                    <!-- Дата и время -->
+                                    <div>
+                                        <label for="guest-datetime" class="block text-xs uppercase tracking-wider text-textMuted mb-2">Дата и время визита *</label>
+                                        <input type="datetime-local" id="guest-datetime" name="datetime" required
+                                            class="form-input w-full px-4 py-3.5 rounded-xl text-sm">
+                                        <p id="error-datetime" class="hidden text-xs text-amber-400 mt-1.5">Выберите удобные дату и время</p>
+                                    </div>
+
+                                    <!-- Количество гостей и зона -->
+                                    <div>
+                                        <label for="guest-zone" class="block text-xs uppercase tracking-wider text-textMuted mb-2">Количество гостей и зона</label>
+                                        <select id="guest-zone" name="zone" class="form-input w-full px-4 py-3.5 rounded-xl text-sm bg-bgPrimary">
+                                            <option value="Столик у панорамного окна (1–2 гостя)">У панорамного окна (1–2 гостя)</option>
+                                            <option value="Тихая зона с розеткой для ноутбука (1 гость)">Тихая зона с розеткой (1 гость)</option>
+                                            <option value="Мягкая зона с креслами (2–4 гостя)">Мягкая зона с креслами (2–4 гостя)</option>
+                                            <option value="Контактный брю-бар с бариста (1–2 гостя)">Контактный брю-бар (1–2 гостя)</option>
+                                            <option value="Большой дубовый стол (компания 4–6 гостей)">Большой стол (4–6 гостей)</option>
+                                        </select>
+                                    </div>
+                                </div>
+
+                                <!-- Пожелания / Предзаказ из меню -->
+                                <div>
+                                    <div class="flex items-center justify-between mb-2">
+                                        <label for="guest-notes" class="block text-xs uppercase tracking-wider text-textMuted">Пожелания или предзаказ напитков</label>
+                                        <button type="button" id="clear-notes-btn" class="text-[11px] text-accent hover:underline hidden">Очистить список</button>
+                                    </div>
+                                    <textarea id="guest-notes" name="notes" rows="3" placeholder="Например: приготовить Капучино на овсяном молоке к 10:30, будем с небольшой собакой..."
+                                        class="form-input w-full px-4 py-3.5 rounded-xl text-sm placeholder:text-textMuted/50 resize-none"></textarea>
+                                </div>
+
+                                <!-- Кнопка отправки -->
+                                <div class="pt-2">
+                                    <button type="submit" class="w-full py-4 px-8 rounded-xl bg-accent hover:bg-accentHover text-bgPrimary font-semibold text-sm uppercase tracking-widest transition-all duration-300 shadow-lg shadow-accent/15 flex items-center justify-center gap-3">
+                                        <span>Подтвердить бронирование</span>
+                                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
+                                        </svg>
+                                    </button>
+                                    <p class="text-[11px] text-textMuted text-center mt-3">
+                                        Нажимая кнопку, вы соглашаетесь на обработку контактных данных для подтверждения резерва.
+                                    </p>
+                                </div>
+                            </form>
+
+                            <!-- Уведомление об успешной отправке (скрыто по умолчанию) -->
+                            <div id="booking-success" class="hidden inset-0 bg-bgCard rounded-3xl p-8 flex flex-col items-center justify-center text-center space-y-5">
+                                <div class="w-16 h-16 rounded-full bg-accent/15 border border-accent flex items-center justify-center text-accent">
+                                    <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
+                                    </svg>
+                                </div>
+                                <div class="space-y-2 max-w-md">
+                                    <span class="text-xs uppercase tracking-widest text-accent">Заявка принята</span>
+                                    <h3 class="font-serif text-2xl sm:text-3xl text-textLight" id="success-title">Ждём вас в Noir & Roast!</h3>
+                                    <p class="text-sm text-textMuted leading-relaxed" id="success-details"></p>
+                                </div>
+                                <button type="button" id="reset-booking-btn" class="px-6 py-2.5 rounded-full border border-accent/40 text-accent text-xs uppercase tracking-widest hover:bg-accent hover:text-bgPrimary transition-colors">
+                                    Создать ещё одну бронь
+                                </button>
+                            </div>
+
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- ================= КОНТАКТЫ И ПОДВАЛ (FOOTER) ================= -->
+    <footer id="contacts" class="bg-bgPrimary border-t border-white/10 pt-20 pb-12">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-12 pb-16 border-b border-white/10">
+                
+                <!-- Колонка 1: Контактная информация -->
+                <div class="lg:col-span-5 space-y-6">
+                    <div>
+                        <span class="font-serif text-2xl tracking-wider font-semibold text-textLight block">NOIR & ROAST</span>
+                        <span class="text-[11px] uppercase tracking-[0.25em] text-accent block mt-1">Спешелти-кофейня • Тёмная Обжарка</span>
+                    </div>
+
+                    <p class="text-sm text-textMuted leading-relaxed max-w-sm">
+                        Авторский кофе свежей обжарки, ремесленная выпечка и камерная атмосфера в историческом квартале города.
+                    </p>
+
+                    <div class="space-y-3 pt-2 text-sm">
+                        <div class="flex items-start gap-3">
+                            <svg class="w-5 h-5 text-accent shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/>
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/>
+                            </svg>
+                            <div>
+                                <span class="text-textLight font-medium block">пр. Абылай хана, 114 (уг. ул. Кабанбай батыра)</span>
+                                <span class="text-xs text-textMuted">Вход со стороны сквера, 1 этаж • Есть велопарковка</span>
+                            </div>
+                        </div>
+
+                        <div class="flex items-start gap-3">
+                            <svg class="w-5 h-5 text-accent shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                            </svg>
+                            <div>
+                                <span class="text-textLight font-medium block">Будни: 08:00 – 22:00</span>
+                                <span class="text-textMuted text-xs block">Выходные и праздники: 09:00 – 23:00</span>
+                            </div>
+                        </div>
+
+                        <div class="flex items-center gap-3">
+                            <svg class="w-5 h-5 text-accent shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"/>
+                            </svg>
+                            <a href="tel:+77015558492" class="text-textLight hover:text-accent transition-colors font-medium">+7 701 555 84 92</a>
+                        </div>
+                    </div>
+
+                    <!-- Социальные сети и копирование адреса -->
+                    <div class="flex flex-wrap items-center gap-3 pt-2">
+                        <a href="#contacts" onclick="copyAddress(event)" class="px-4 py-2 rounded-xl bg-bgCard border border-white/10 hover:border-accent/40 text-xs text-textLight flex items-center gap-2 transition-colors">
+                            <svg class="w-4 h-4 text-accent" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"/>
+                            </svg>
+                            <span id="copy-address-text">Скопировать адрес для 2ГИС</span>
+                        </a>
+                        <a href="#booking" class="px-4 py-2 rounded-xl bg-bgCard border border-white/10 hover:border-accent/40 text-xs text-textMuted hover:text-accent transition-colors">
+                            Instagram
+                        </a>
+                        <a href="#booking" class="px-4 py-2 rounded-xl bg-bgCard border border-white/10 hover:border-accent/40 text-xs text-textMuted hover:text-accent transition-colors">
+                            Telegram-канал
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Колонка 2: Интерактивная стилизованная схема проезда -->
+                <div class="lg:col-span-7">
+                    <div class="rounded-2xl bg-bgCard border border-white/10 p-4 sm:p-6 relative overflow-hidden">
+                        <div class="flex items-center justify-between mb-4">
+                            <span class="text-xs uppercase tracking-widest text-textMuted">Интерактивная схема квартала</span>
+                            <span class="text-xs text-accent flex items-center gap-1.5">
+                                <span class="w-2 h-2 rounded-full bg-accent animate-ping"></span>
+                                Центр города • 3 мин от метро
+                            </span>
+                        </div>
+
+                        <!-- Стилизованная минималистичная SVG-карта в тёмных тонах -->
+                        <div class="relative rounded-xl overflow-hidden border border-white/5 bg-[#110F0D] h-64 sm:h-72 flex items-center justify-center">
+                            <svg class="w-full h-full object-cover" viewBox="0 0 600 280" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <!-- Фоновая сетка кварталов -->
+                                <rect width="600" height="280" fill="#12100E"/>
+                                <g stroke="#1E1A17" stroke-width="18">
+                                    <line x1="0" y1="70" x2="600" y2="70"/>
+                                    <line x1="0" y1="190" x2="600" y2="190"/>
+                                    <line x1="160" y1="0" x2="160" y2="280"/>
+                                    <line x1="360" y1="0" x2="360" y2="280"/>
+                                    <line x1="510" y1="0" x2="510" y2="280"/>
+                                </g>
+                                <!-- Тонкие осевые линии улиц -->
+                                <g stroke="#2C2621" stroke-width="1" stroke-dasharray="4 4">
+                                    <line x1="0" y1="70" x2="600" y2="70"/>
+                                    <line x1="0" y1="190" x2="600" y2="190"/>
+                                    <line x1="160" y1="0" x2="160" y2="280"/>
+                                    <line x1="360" y1="0" x2="360" y2="280"/>
+                                </g>
+                                <!-- Кварталы / Здания -->
+                                <rect x="180" y="90" width="160" height="80" rx="8" fill="#1A1614" stroke="#29231E"/>
+                                <rect x="380" y="90" width="110" height="80" rx="8" fill="#1A1614" stroke="#29231E"/>
+                                <rect x="30" y="90" width="110" height="80" rx="8" fill="#1A1614" stroke="#29231E"/>
+                                <rect x="180" y="210" width="160" height="55" rx="6" fill="#1A1614"/>
+                                
+                                <!-- Подписи улиц -->
+                                <text x="25" y="64" fill="#6E665F" font-size="10" font-family="Inter, sans-serif" letter-spacing="1.5">УЛ. КАБАНБАЙ БАТЫРА</text>
+                                <text x="25" y="184" fill="#6E665F" font-size="10" font-family="Inter, sans-serif" letter-spacing="1.5">УЛ. БОГЕНБАЙ БАТЫРА</text>
+                                <text x="368" y="45" fill="#6E665F" font-size="10" font-family="Inter, sans-serif" letter-spacing="1.5" transform="rotate(90 368 45)">ПР. АБЫЛАЙ ХАНА</text>
+
+                                <!-- Маршрут от сквера -->
+                                <path d="M160 190 H320 V140" stroke="#C5A059" stroke-width="2" stroke-dasharray="4 4"/>
+
+                                <!-- Метка кофейни Noir & Roast -->
+                                <circle cx="320" cy="130" r="24" fill="#C5A059" fill-opacity="0.15"/>
+                                <circle cx="320" cy="130" r="12" fill="#C5A059"/>
+                                <circle cx="320" cy="130" r="5" fill="#141210"/>
+
+                                <!-- Бейдж на карте -->
+                                <rect x="215" y="82" width="135" height="32" rx="6" fill="#141210" stroke="#C5A059" stroke-width="1.2"/>
+                                <text x="282" y="102" fill="#F5EFEB" font-size="11" font-weight="600" font-family="Playfair Display, serif" text-anchor="middle">Noir &amp; Roast ☕</text>
+                            </svg>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- Нижняя строка копирайта -->
+            <div class="pt-8 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-textMuted">
+                <p>© 2025 Кофейня «Noir & Roast» (Тёмная Обжарка). Все права защищены.</p>
+                <div class="flex items-center gap-6">
+                    <a href="#header" class="hover:text-accent transition-colors">Наверх ↑</a>
+                </div>
+            </div>
+
+        </div>
+    </footer>
+
+    <!-- Всплывающее уведомление (Toast) для быстрых действий -->
+    <div id="toast" class="fixed bottom-6 right-6 z-50 transform translate-y-20 opacity-0 pointer-events-none transition-all duration-300 bg-bgCard border border-accent/50 text-textLight px-5 py-3.5 rounded-2xl shadow-2xl flex items-center gap-3">
+        <span class="w-2.5 h-2.5 rounded-full bg-accent"></span>
+        <span id="toast-message" class="text-xs sm:text-sm font-medium">Позиция добавлена к бронированию</span>
+    </div>
+
+    <!-- ================= ИНТЕРАКТИВНЫЙ СКРИПТ (Аналог script.js) ================= -->
+    <script>
+        /**
+         * 1. ДАННЫЕ МЕНЮ КОФЕЙНИ (с ценами в тенге ₸)
+         */
+        const menuItems = [
+            {
+                id: 'espresso',
+                title: 'Двойной эспрессо',
+                category: 'classic',
+                categoryLabel: 'Классика',
+                profile: 'Ноты горького шоколада и спелой сливы',
+                volume: '60 мл',
+                price: 1100,
+                badge: 'Бразилия / Эфиопия'
+            },
+            {
+                id: 'cappuccino',
+                title: 'Капучино',
+                category: 'classic',
+                categoryLabel: 'Классика',
+                profile: 'Бархатная молочная пена, жареный фундук и карамель',
+                volume: '250 мл',
+                price: 1400,
+                badge: 'Хит утра'
+            },
+            {
+                id: 'flat-white',
+                title: 'Флэт Уайт',
+                category: 'classic',
+                categoryLabel: 'Классика',
+                profile: 'Насыщенный двойной ристретто, тёмный шоколад',
+                volume: '200 мл',
+                price: 1500,
+                badge: 'Крепкий баланс'
+            },
+            {
+                id: 'v60-ethiopia',
+                title: 'Воронка V60 Эфиопия Иргачефф',
+                category: 'alternative',
+                categoryLabel: 'Альтернатива',
+                profile: 'Цветочный профиль, бергамот и белый персик',
+                volume: '300 мл',
+                price: 1900,
+                badge: 'Specialty 87.5'
+            },
+            {
+                id: 'aeropress-colombia',
+                title: 'Аэропресс Колумбия Уила',
+                category: 'alternative',
+                categoryLabel: 'Альтернатива',
+                profile: 'Красное яблоко, тростниковый сахар, плотное тело',
+                volume: '250 мл',
+                price: 1800,
+                badge: 'Ручное заваривание'
+            },
+            {
+                id: 'raf-lavender',
+                title: 'Авторский раф Лаванда-Розмарин',
+                category: 'signature',
+                categoryLabel: 'Авторские',
+                profile: 'Нежная сливочная текстура, горная лаванда и свежий розмарин',
+                volume: '350 мл',
+                price: 2100,
+                badge: 'Season Special'
+            },
+            {
+                id: 'almond-croissant',
+                title: 'Миндальный круассан',
+                category: 'bakery',
+                categoryLabel: 'Выпечка',
+                profile: 'Слоёное тесто на фермерском масле, франжипан и лепестки миндаля',
+                volume: '110 г',
+                price: 1600,
+                badge: 'Своя пекарня'
+            },
+            {
+                id: 'caramel-tart',
+                title: 'Тарт с солёной карамелью и ганашем',
+                category: 'bakery',
+                categoryLabel: 'Выпечка',
+                profile: 'Песочная основа, бельгийский тёмный шоколад 70%',
+                volume: '130 г',
+                price: 1850,
+                badge: 'Ручная работа'
+            }
+        ];
+
+        // Хранилище выбранных позиций для предзаказа к столику
+        let selectedItems = [];
+
+        // Форматирование числа в тенге (например: 1 900 ₸)
+        function formatTenge(amount) {
+            return amount.toString().replace(/\B(?=(\d{3})+(?!\d))/g, " ") + " ₸";
+        }
+
+        /**
+         * 2. РЕНДЕР КАРТОЧЕК МЕНЮ И ФИЛЬТРАЦИЯ
+         */
+        const menuGrid = document.getElementById('menu-grid');
+        const filterButtons = document.querySelectorAll('.filter-btn');
+
+        function renderMenu(filter = 'all') {
+            menuGrid.innerHTML = '';
+            const filtered = filter === 'all' 
+                ? menuItems 
+                : menuItems.filter(item => item.category === filter);
+
+            filtered.forEach(item => {
+                const isSelected = selectedItems.some(sel => sel.id === item.id);
+                const card = document.createElement('article');
+                card.className = 'menu-card rounded-2xl p-6 flex flex-col justify-between relative group';
+                card.innerHTML = `
+                    <div>
+                        <div class="flex items-center justify-between gap-2 mb-4">
+                            <span class="text-[10px] uppercase tracking-widest px-2.5 py-1 rounded-md bg-bgPrimary text-accent border border-accent/20">
+                                ${item.categoryLabel}
+                            </span>
+                            <span class="text-xs text-textMuted font-mono">${item.volume}</span>
+                        </div>
+                        <h3 class="font-serif text-xl text-textLight group-hover:text-accent transition-colors leading-snug mb-2">
+                            ${item.title}
+                        </h3>
+                        <p class="text-xs sm:text-sm text-textMuted leading-relaxed mb-6">
+                            ${item.profile}
+                        </p>
+                    </div>
+
+                    <div class="pt-4 border-t border-white/5 flex items-center justify-between gap-3">
+                        <div>
+                            <span class="text-[10px] uppercase tracking-wider text-textMuted block">Стоимость</span>
+                            <span class="font-serif text-xl text-accent font-semibold">${formatTenge(item.price)}</span>
+                        </div>
+                        <button type="button" onclick="toggleSelectItem('${item.id}')" 
+                            class="px-3.5 py-2 rounded-xl text-xs font-medium transition-all flex items-center gap-1.5 ${
+                                isSelected 
+                                ? 'bg-accent text-bgPrimary font-semibold' 
+                                : 'bg-bgPrimary text-textLight hover:border-accent/50 border border-white/10'
+                            }">
+                            <span>${isSelected ? 'Добавлено ✓' : '+ К столику'}</span>
+                        </button>
+                    </div>
+                `;
+                menuGrid.appendChild(card);
+            });
+        }
+
+        // Обработчик переключения категорий меню
+        filterButtons.forEach(btn => {
+            btn.addEventListener('click', () => {
+                filterButtons.forEach(b => {
+                    b.classList.remove('bg-accent', 'text-bgPrimary', 'font-semibold');
+                    b.classList.add('bg-bgCard', 'text-textMuted');
+                });
+                btn.classList.remove('bg-bgCard', 'text-textMuted');
+                btn.classList.add('bg-accent', 'text-bgPrimary', 'font-semibold');
+
+                const filterValue = btn.getAttribute('data-filter');
+                renderMenu(filterValue);
+            });
+        });
+
+        /**
+         * 3. ДОБАВЛЕНИЕ ПОЗИЦИЙ В ПРЕДЗАКАЗ К БРОНИРОВАНИЮ
+         */
+        const selectedTray = document.getElementById('selected-tray');
+        const trayCount = document.getElementById('tray-count');
+        const trayItemsList = document.getElementById('tray-items-list');
+        const trayTotal = document.getElementById('tray-total');
+        const guestNotes = document.getElementById('guest-notes');
+        const clearNotesBtn = document.getElementById('clear-notes-btn');
+
+        window.toggleSelectItem = function(itemId) {
+            const item = menuItems.find(i => i.id === itemId);
+            if (!item) return;
+
+            const existingIndex = selectedItems.findIndex(i => i.id === itemId);
+            if (existingIndex > -1) {
+                selectedItems.splice(existingIndex, 1);
+                showToast(`Убрано из предзаказа: ${item.title}`);
+            } else {
+                selectedItems.push(item);
+                showToast(`Добавлено к столику: ${item.title} (${formatTenge(item.price)})`);
+            }
+
+            // Перерисовываем текущий фильтр
+            const activeFilterBtn = document.querySelector('.filter-btn.bg-accent');
+            const currentFilter = activeFilterBtn ? activeFilterBtn.getAttribute('data-filter') : 'all';
+            renderMenu(currentFilter);
+            updateSelectedTray();
+        };
+
+        function updateSelectedTray() {
+            if (selectedItems.length === 0) {
+                selectedTray.classList.add('hidden');
+                clearNotesBtn.classList.add('hidden');
+                return;
+            }
+
+            selectedTray.classList.remove('hidden');
+            clearNotesBtn.classList.remove('hidden');
+            trayCount.textContent = selectedItems.length;
+
+            const names = selectedItems.map(i => `${i.title} (${formatTenge(i.price)})`).join(', ');
+            const total = selectedItems.reduce((sum, i) => sum + i.price, 0);
+
+            trayItemsList.textContent = names;
+            trayTotal.textContent = formatTenge(total);
+
+            // Автоматически дополняем поле пожеланий в форме бронирования
+            guestNotes.value = `Предзаказ к столику: ${names}. Общая сумма: ${formatTenge(total)}.`;
+        }
+
+        clearNotesBtn.addEventListener('click', () => {
+            selectedItems = [];
+            guestNotes.value = '';
+            clearNotesBtn.classList.add('hidden');
+            selectedTray.classList.add('hidden');
+            const activeFilterBtn = document.querySelector('.filter-btn.bg-accent');
+            renderMenu(activeFilterBtn ? activeFilterBtn.getAttribute('data-filter') : 'all');
+        });
+
+        /**
+         * 4. МОБИЛЬНОЕ МЕНЮ-ГАМБУРГЕР
+         */
+        const mobileMenuBtn = document.getElementById('mobile-menu-btn');
+        const mobileMenu = document.getElementById('mobile-menu');
+        const iconOpen = document.getElementById('menu-icon-open');
+        const iconClose = document.getElementById('menu-icon-close');
+        const mobileLinks = document.querySelectorAll('.mobile-link');
+
+        function toggleMobileMenu() {
+            const isHidden = mobileMenu.classList.contains('hidden');
+            if (isHidden) {
+                mobileMenu.classList.remove('hidden');
+                iconOpen.classList.add('hidden');
+                iconClose.classList.remove('hidden');
+            } else {
+                mobileMenu.classList.add('hidden');
+                iconOpen.classList.remove('hidden');
+                iconClose.classList.add('hidden');
+            }
+        }
+
+        mobileMenuBtn.addEventListener('click', toggleMobileMenu);
+        mobileLinks.forEach(link => {
+            link.addEventListener('click', () => {
+                if (!mobileMenu.classList.contains('hidden')) {
+                    toggleMobileMenu();
+                }
+            });
+        });
+
+        /**
+         * 5. АККОРДЕОН FAQ
+         */
+        const faqItems = document.querySelectorAll('.faq-item');
+        faqItems.forEach(item => {
+            const trigger = item.querySelector('.faq-trigger');
+            const answer = item.querySelector('.faq-answer');
+
+            trigger.addEventListener('click', () => {
+                const isOpen = item.classList.contains('active');
+
+                // Закрываем все остальные вкладки
+                faqItems.forEach(other => {
+                    other.classList.remove('active');
+                    other.querySelector('.faq-answer').style.maxHeight = null;
+                });
+
+                // Раскрываем текущую, если она была закрыта
+                if (!isOpen) {
+                    item.classList.add('active');
+                    answer.style.maxHeight = answer.scrollHeight + 32 + "px";
+                }
+            });
+        });
+
+        /**
+         * 6. ВАЛИДАЦИЯ И ОТПРАВКА ФОРМЫ БРОНИРОВАНИЯ
+         */
+        const reservationForm = document.getElementById('reservation-form');
+        const nameInput = document.getElementById('guest-name');
+        const phoneInput = document.getElementById('guest-phone');
+        const datetimeInput = document.getElementById('guest-datetime');
+        const zoneInput = document.getElementById('guest-zone');
+        const bookingSuccess = document.getElementById('booking-success');
+        const successTitle = document.getElementById('success-title');
+        const successDetails = document.getElementById('success-details');
+        const resetBookingBtn = document.getElementById('reset-booking-btn');
+
+        // Устанавливаем дефолтную дату и время (сегодня/завтра на удобный час)
+        function setDefaultDateTime() {
+            const now = new Date();
+            now.setHours(now.getHours() + 2);
+            now.setMinutes(0);
+            const tzOffset = now.getTimezoneOffset() * 60000;
+            const localISOTime = (new Date(now - tzOffset)).toISOString().slice(0, 16);
+            datetimeInput.value = localISOTime;
+        }
+
+        reservationForm.addEventListener('submit', function(e) {
+            e.preventDefault();
+            let isValid = true;
+
+            // Валидация имени
+            const errorName = document.getElementById('error-name');
+            if (nameInput.value.trim().length < 2) {
+                errorName.classList.remove('hidden');
+                isValid = false;
+            } else {
+                errorName.classList.add('hidden');
+            }
+
+            // Валидация телефона (минимум 7 цифр)
+            const errorPhone = document.getElementById('error-phone');
+            const digitsOnly = phoneInput.value.replace(/\D/g, '');
+            if (digitsOnly.length < 7) {
+                errorPhone.classList.remove('hidden');
+                isValid = false;
+            } else {
+                errorPhone.classList.add('hidden');
+            }
+
+            // Валидация даты
+            const errorDatetime = document.getElementById('error-datetime');
+            if (!datetimeInput.value) {
+                errorDatetime.classList.remove('hidden');
+                isValid = false;
+            } else {
+                errorDatetime.classList.add('hidden');
+            }
+
+            if (!isValid) return;
+
+            // Форматируем дату для уведомления
+            const formattedDate = new Date(datetimeInput.value).toLocaleString('ru-RU', {
+                day: 'numeric',
+                month: 'long',
+                hour: '2-digit',
+                minute: '2-digit'
+            });
+
+            successTitle.textContent = `${nameInput.value.trim()}, столик зарезервирован!`;
+            successDetails.innerHTML = `
+                Мы ждём вас <strong>${formattedDate}</strong>.<br>
+                Выбранная зона: <span class="text-textLight">${zoneInput.value}</span>.<br>
+                Подтверждение отправлено в SMS / WhatsApp на номер <strong>${phoneInput.value.trim()}</strong>.
+            `;
+
+            reservationForm.classList.add('hidden');
+            bookingSuccess.classList.remove('hidden');
+            showToast('Бронирование успешно подтверждено!');
+        });
+
+        resetBookingBtn.addEventListener('click', () => {
+            bookingSuccess.classList.add('hidden');
+            reservationForm.classList.remove('hidden');
+        });
+
+        /**
+         * 7. ВСПОМОГАТЕЛЬНЫЕ ФУНКЦИИ (Копирование адреса и Toast-уведомление)
+         */
+        let toastTimeout;
+        function showToast(message) {
+            const toast = document.getElementById('toast');
+            const toastMessage = document.getElementById('toast-message');
+            toastMessage.textContent = message;
+            toast.classList.remove('translate-y-20', 'opacity-0');
+            
+            clearTimeout(toastTimeout);
+            toastTimeout = setTimeout(() => {
+                toast.classList.add('translate-y-20', 'opacity-0');
+            }, 3200);
+        }
+
+        window.copyAddress = function(event) {
+            event.preventDefault();
+            const address = "пр. Абылай хана, 114";
+            const tempInput = document.createElement('textarea');
+            tempInput.value = address;
+            document.body.appendChild(tempInput);
+            tempInput.select();
+            document.execCommand('copy');
+            document.body.removeChild(tempInput);
+
+            const copyText = document.getElementById('copy-address-text');
+            copyText.textContent = "Адрес скопирован ✓";
+            showToast("Адрес скопирован: пр. Абылай хана, 114");
+            setTimeout(() => {
+                copyText.textContent = "Скопировать адрес для 2ГИС";
+            }, 3000);
+        };
+
+        // Инициализация при загрузке страницы
+        window.addEventListener('DOMContentLoaded', () => {
+            renderMenu('all');
+            setDefaultDateTime();
+        });
+    </script>
+</body>
+</html>
